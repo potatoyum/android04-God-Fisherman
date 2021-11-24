@@ -28,8 +28,10 @@ class FeedRepository @Inject constructor(
     @ApplicationScope private val externalScope: CoroutineScope
 ) {
     private fun fetchPagingData(type: Type): Flow<PagingData<FeedData>> {
-        externalScope.launch {
-            localDataSource.deleteAll()
+        if (type == Type.ALL) {
+            externalScope.launch {
+                localDataSource.deleteAll()
+            }
         }
 
         return Pager(PagingConfig(pageSize = 2)) { FeedRemotePagingSource(type) }.flow
